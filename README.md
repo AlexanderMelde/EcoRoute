@@ -1,22 +1,22 @@
 # EcoRoute — Carbon-Aware Workload Router
 
-> **Follow-the-Sun Routing für asynchrone Compute-Workloads**  
-> Routet rechenintensive Jobs (KI-Inferenz, CI/CD, CMS-Image-Processing, Video-Transcoding) dynamisch in Regionen mit maximalem erneuerbaren Stromüberschuss (niedrigste gCO₂eq/kWh).
+> **Follow-the-Sun Routing for Asynchronous Compute Workloads**  
+> Dynamically routes compute-intensive jobs (AI inference, CI/CD, CMS image processing, video transcoding) to regions with peak surplus renewable energy (lowest gCO₂eq/kWh).
 
 ---
 
-## 1. Problem & Pain Point
+## 1. Problem & Pain Points
 
-- **Exponentielles Compute-Wachstum:** KI-Inferenz (LLMs, RAG, autonome Agenten), CI/CD und Background-Jobs fressen gigantische Strommengen.
-- **Fluktuierender Strommix:** Der Anteil erneuerbarer Energien in Rechenzentren schwankt je nach Sonnenstand, Wind und Region extrem.
-- **Inflexible Infrastruktur:** Bisherige Architekturen routen statisch auf feste Server/Regionen, unabhängig vom aktuellen Energiemix.
-- **Falsche Priorisierung:** Asynchrone Jobs (Latenztoleranz: 0,5s bis Minuten) werden unnötig mit Kohlestrom verarbeitet.
+- **Exponential Compute Growth:** AI inference (LLMs, RAG, autonomous agents), CI/CD pipelines, and background processing consume immense amounts of electricity.
+- **Fluctuating Power Grid Mix:** The share of renewable energy in data centers varies drastically depending on solar radiation, wind speeds, and geography.
+- **Inflexible Infrastructure:** Legacy architectures statically route traffic to fixed servers or regions, completely blind to real-time energy grid dynamics.
+- **Misaligned Priorities:** Latency-tolerant asynchronous jobs (tolerating 0.5s to several minutes) are needlessly powered by carbon-heavy fossil fuels.
 
 ---
 
-## 2. Die Lösung: EcoRoute
+## 2. The Solution: EcoRoute
 
-Ein intelligenter, universeller **Reverse Proxy & Gateway**, der asynchrone HTTP-Requests und Background-Jobs analysiert und anhand von Echtzeit-Emissionsdaten dorthin dispatcht, wo im Moment sprichwörtlich die Sonne scheint.
+An intelligent, universal **reverse proxy & gateway** that inspects asynchronous HTTP requests and background jobs, dynamically dispatching them to wherever the sun is literally shining and the wind is blowing.
 
 ```
                   ┌───────────────────────────────┐
@@ -27,141 +27,160 @@ Ein intelligenter, universeller **Reverse Proxy & Gateway**, der asynchrone HTTP
                                   ▼
                   ┌───────────────────────────────┐
                   │           EcoRoute            │
-                  │   - Carbon Aware Engine       │
-                  │   - Compliance Filter (EU-only)│
-                  │   - Universeller HTTP / OpenAI │
+                  │   - Carbon-Aware Engine       │
+                  │   - Compliance Filter(EU-only)│
+                  │   - Universal HTTP / OpenAI   │
                   └───────┬───────────────┬───────┘
                           │               │
      Lowest gCO2/kWh      │               │  Fallback / Low Green
    (High Solar/Wind)      ▼               ▼
                  ┌─────────────────┐    ┌─────────────────┐
                  │ Cloud Region A  │    │ Cloud Region B  │
-                 │ (z.B. Norwegen) │    │ (z.B. Frankfurt)│
+                 │ (e.g., Norway)  │    │(e.g., Frankfurt)│
                  │  ~25 gCO2/kWh   │    │  ~380 gCO2/kWh  │
                  └─────────────────┘    └─────────────────┘
 ```
 
-### Kernfunktionen & Integration
+### Core Features & Integration
 
-1. **Universeller HTTP Reverse Proxy & Job-Dispatcher:**
-   - **Beliebige Workloads:** Routet beliebige asynchrone HTTP-Requests (z. B. `POST /api/v1/jobs/image-transcode`, `POST /ci/runner`, `POST /video/convert`) transparent an Worker in der grünsten Region weiter.
-   - **Zero-Code OpenAI-Profil:** Für KI-Workloads fungiert EcoRoute als Drop-In Base-URL-Replacement für beliebige OpenAI-kompatible Clients.
-2. **Dynamic Carbon Routing:** Fragt Grid-Daten (z. B. Electricity Maps / WattTime) ab und ermittelt die Region mit der geringsten Kohlenstoffintensität (`gCO2eq/kWh`).
+1. **Universal HTTP Reverse Proxy & Job Dispatcher:**
+   - **Arbitrary Workloads:** Transparently routes any asynchronous HTTP request (e.g., `POST /api/v1/jobs/image-transcode`, `POST /ci/runner`, `POST /video/convert`) to workers in the greenest region.
+   - **Zero-Code OpenAI Profile:** For AI workloads, EcoRoute acts as a drop-in `baseURL` replacement for any OpenAI-compatible client.
+2. **Dynamic Carbon Routing:** Queries live grid emissions data (e.g., Electricity Maps / WattTime) and identifies the region with the lowest carbon intensity (`gCO2eq/kWh`).
 3. **Compliance, Sovereign Infrastructure & Geofencing:**
-   - **Self-Hosted Enterprise (Infrastruktur-Perimeter):** Unternehmen konfigurieren in `config.yaml` / ENV nur freigegebene Zielregionen (z. B. `ALLOWED_REGIONS=["no-south", "de-central", "fr-north"]`). Workloads verlassen niemals die EU/DSGVO-Zone; EcoRoute optimiert den Strommix rein _innerhalb_ dieses souveänen Perimeters.
-   - **Multi-Tenant / Edge-Ebene:** Dynamische Steuerung pro Request via Subdomains (z. B. `eu.ecoroute.io`), Header (`X-EcoRoute-Zone: EU-only`) oder URL-Pfad.
-4. **Live-Telemetry:** Erfasst eingesparte CO₂-Emissionen und berechnet die _Green Routing Ratio_.
-5. **Optional: MCP Server Add-on:** Bietet Agenten (z. B. Claude Desktop) optionale Resources (`ecoroute://stats`), um den eigenen CO₂-Footprint transparent abzufragen.
+   - **Self-Hosted Enterprise (Infrastructure Perimeter):** Organizations configure approved target regions in `config.yaml` / ENV (e.g., `ALLOWED_REGIONS=["no-south", "de-central", "fr-north"]`). Workloads never leave the sovereign/GDPR zone; EcoRoute optimizes the power mix strictly _within_ this trusted boundary.
+   - **Multi-Tenant / Edge Level:** Dynamic per-request routing via subdomains (e.g., `eu.ecoroute.io`), request headers (`X-EcoRoute-Zone: EU-only`), or URL paths.
+4. **Live Telemetry:** Tracks avoided CO₂ emissions in real time and calculates the _Green Routing Ratio_.
+5. **Optional: MCP Server Add-On:** Exposes resources (`ecoroute://stats`) for AI agents (e.g., Claude Desktop) to query their carbon footprint transparently.
 
 ---
 
-## 3. Architektur- & Deployment-Modelle im Vergleich
+## 3. Architecture & Deployment Models Compared
 
-| Modell                                  | Funktionsweise                                                                                                                                                               | Latenz & Ausfallsicherheit                                                              | Hackathon-Eignung                                                                                  | Production-Eignung                                                       |
-| :-------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
-| **Edge Computing (Empfohlen für Prod)** | Globales Edge-Skript (Cloudflare Workers, Fastly Compute). Request trifft physisch nächsten Edge-Point, prüft gecachten Strom-Index und leitet direkt an Ziel-Region weiter. | **Kein SPOF, minimale Latenz** (kein zentraler Flaschenhals).                           | **Sehr hoch:** Wenige Zeilen Code, blitzschnell deployt.                                           | **Höchste Skalierbarkeit & Ausfallsicherheit.**                          |
-| **Klassischer Reverse Proxy**           | Lokaler/Zentraler Server (Node.js/Fastify, Rust/Axum oder Go) als Gateway/Middleware.                                                                                        | **SPOF-Gefahr & Doppelter Hop** in globaler Prod, aber vernachlässigbar im lokalen LAN. | **Optimal für den Demo-Tisch:** Steuert direkt Pis, LEDs & Dashboard im lokalen Subnetz.           | Eher für On-Premise oder Gateway-Cluster.                                |
-| **Client-Side SDK**                     | Library (`npm`/`pip`), die regelmäßig einen schlanken Carbon-Index (JSON) cacht und Requests clientseitig direkt an die grünste Region schickt.                              | **Kein Proxy-Hop**, maximale Dezentralisierung.                                         | **Mittel:** Dezentrale Telemetrie für ein Live-Pitch-Dashboard erfordert extra Reporting-Endpunkt. | **Sehr hoch:** Perfekt für Serverless/Backend-Apps ohne Zwischenstation. |
-| **DNS / Anycast Routing**               | Dynamisches GeoDNS (z. B. Route53 / NS1), das Domain-Auflösung basierend auf gCO₂eq-Gewichtungen vornimmt.                                                                   | **Null Latenz-Overhead** auf HTTP-Ebene.                                                | **Gering:** DNS-Caching (TTL) ist zu träge für minütliche Solar-Taschenlampen-Demos.               | **Hoch:** Für grobgranulare Lastverteilung zwischen RZs.                 |
-| **Service Mesh / Sidecar**              | Envoy-Filter / Istio / Traefik-Plugin im Kubernetes-Cluster für Egress-Traffic.                                                                                              | Hochgradig optimiert innerhalb von Cloud-Clustern.                                      | **Gering:** Zu hohe Setup-Komplexität für einen Hackathon.                                         | **Industrie-Standard** für Enterprise-Microservices.                     |
+| Model                                     | How It Works                                                                                                                                                                               | Latency & Resilience                                                            | Hackathon Suitability                                                                                  | Production Readiness                                                                   |
+| :---------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------- |
+| **Edge Computing (Recommended for Prod)** | Global edge worker (Cloudflare Workers, Fastly Compute). The request hits the geographically closest edge PoP, checks the cached carbon index, and forwards directly to the target region. | **No SPOF, minimal latency** (no centralized bottleneck).                       | **Very High:** Few lines of code, deployed in seconds.                                                 | **Highest scalability & resilience.**                                                  |
+| **Classic Reverse Proxy**                 | Local or centralized server (Node.js/Fastify, Rust/Axum, or Go) acting as an API gateway/middleware.                                                                                       | **SPOF risk & double hop** in global production, but negligible on a local LAN. | **Optimal for booth demos:** Directly controls Pis, LEDs, and the dashboard on a local subnet.         | Best suited for on-premise or gateway clusters.                                        |
+| **Client-Side SDK**                       | Library (`npm`/`pip`) that periodically caches a lightweight carbon index (JSON) and dispatches requests client-side directly to the greenest region.                                      | **Zero proxy hop**, maximum decentralization.                                   | **Medium:** Decentralized telemetry requires a separate reporting endpoint for a live pitch dashboard. | **Very High:** Perfect for serverless/backend microservices without intermediary hops. |
+| **DNS / Anycast Routing**                 | Dynamic GeoDNS (e.g., Route53 / NS1) resolving domains based on gCO₂eq weightings.                                                                                                         | **Zero latency overhead** at the HTTP layer.                                    | **Low:** DNS caching (TTL) is too sluggish for minute-by-minute flashlight demos.                      | **High:** For coarse-grained traffic balancing across data centers.                    |
+| **Service Mesh / Sidecar**                | Envoy filter / Istio / Traefik plugin within a Kubernetes cluster handling egress traffic.                                                                                                 | Highly optimized within cloud clusters.                                         | **Low:** Setup complexity is too high for a hackathon.                                                 | **Industry Standard** for enterprise microservices.                                    |
 
-> **Strategie für den Hackathon:** Hybrid!
+> **Hackathon Strategy: Hybrid!**
 >
-> - **Für die haptische Live-Demo:** Ein lokaler Router (Node.js oder Rust), der direkt mit den Pis, den LEDs und dem Dashboard im Messe-WLAN/LAN spricht.
-> - **Für den Pitch & Skalierbarkeits-Nachweis:** Edge-Architektur (Cloudflare Worker) & Client-SDK als bewiesene Architekturpfade präsentieren.
+> - **For the tactile live demo:** A local router (Node.js or Rust) communicating directly with the Raspberry Pis, LEDs, and the dashboard over the local event Wi-Fi/LAN.
+> - **For the pitch & scalability story:** Showcase Edge architecture (Cloudflare Workers) & Client SDK as proven production paths.
 
 ---
 
-## 4. Workload-Matrix (Eignungsprofil)
+## 4. Workload Matrix (Fit Profile)
 
-Ideal für alle **asynchronen, rechenintensiven** Workloads mit Latenzfenster $\ge 0,5\,\text{s}$:
+Ideal for all **asynchronous, compute-heavy** workloads with a latency tolerance window $\ge 0.5\,\text{s}$:
 
-| Workload-Typ                     | Beispiel-Szenario                                                | Latenztoleranz      | Carbon-Impact       |
-| :------------------------------- | :--------------------------------------------------------------- | :------------------ | :------------------ |
-| **KI-Inferenz (Batch / Agents)** | RAG-Embedding, Dokument-Analysen, Auto-Tagging, LLM-Agent-Loops  | Hoch (1s – 60s)     | **Extrem hoch**     |
-| **CMS Background Jobs**          | WordPress WebP-Konvertierung, Thumbnail-Generierung (50+ Bilder) | Mittel (1s – 5s)    | **Hoch**            |
-| **CI/CD Pipelines**              | Automated Testing, Docker Image Builds, Code Compilation         | Sehr hoch (Minuten) | **Hoch**            |
-| **Media Transcoding**            | Video-Encoding in HLS/DASH Streaming-Formate                     | Hoch (Minuten)      | **Extrem hoch**     |
-| **Data Crunching & Backup**      | Tägliche DB-Snapshots, ETL-Pipelines, Analytics-Aggregation      | Sehr hoch (Stunden) | **Mittel bis Hoch** |
-
----
-
-## 5. Hackathon MVP-Scope
-
-### Komponente 1: Core Router (Software)
-
-- **Tech-Stack Optionen:**
-  - **Option A: TypeScript / Node.js (Fastify):** Schnelle Entwicklungsgeschwindigkeit im Hackathon, nativer Support für das offizielle Model Context Protocol (MCP) TypeScript SDK, unkompliziertes Streaming von OpenAI-Responses & nahtlose WebSocket-Anbindung ans Dashboard.
-  - **Option B: Rust (Axum / Actix-web):** Maximale Laufzeit-Effizienz, minimaler Memory-Footprint am Edge, unterstreicht die "Sovereign, efficient infrastructure"-Story mit nativer Performance.
-- **API-Schnittstellen:**
-  - **Universeller HTTP Reverse Proxy:** Dynamisches Forwarding für beliebige asynchrone REST-Workloads (Image-Processing, CI/CD-Pipelines, Batch-Jobs) an die grünste Ziel-Region.
-  - **OpenAI-kompatibles Gateway Profil:** Drop-In Proxy (`/v1/chat/completions`) für nahtlose KI- und Agenten-Einbindung.
-  - **Optionales MCP Server Interface:** Für direkte Tool-Aufrufe (`ecoroute://stats`).
-- **Routing-Engine & Carbon-Datenmodell (Hybrid-Ansatz):**
-  - **Basis-Emissionsdaten:** Realistische Grid-Daten (z. B. via Electricity Maps API oder Fallback-Dataset für Norwegen ~25 g, Frankreich ~60 g, Deutschland ~380 g, Polen ~650 g CO₂eq/kWh).
-  - **Dynamischer Sensor-Override (Taschenlampen-Effekt):** Detektiert der I2C-Sensor an einem Pi Licht-Einstrahlung (Solarüberschuss), überschreibt ein mathematischer Faktor die Intensität dieser Region dynamisch bis auf ~0 gCO₂eq/kWh.
-  - **Geofencing & Constraint-Check:** Filterung nach Regionen (`EU-only`) vor dem Ranking.
-  - **Dispatch:** Request geht an die Region mit dem niedrigsten resultierenden Score.
-
-### Komponente 2: Live-Dashboard (Visualisierung & Pitch-Zentrum)
-
-- **Design-Konzept (Dual-View):**
-  - **Interaktive Map / Region-Cluster:** Visualisiert die globalen Standorte (z. B. Norwegen, Deutschland, Spanien). Wenn ein Pi-Solarpanel angestrahlt wird, leuchtet der entsprechende Node im Dashboard auf ("Solar Surge Detected"). Animierte Datenfluss-Partikel zeigen das dynamische Routing in Echtzeit.
-  - **Side-by-Side Live-Vergleich ("Mit vs. Ohne EcoRoute"):**
-    - _Default-Routing (Ohne EcoRoute):_ Feste Zielregion (z. B. lokales RZ mit hohem Kohlestrom-Anteil) $\rightarrow$ kumulierte Emissionen steigen schnell.
-    - _EcoRoute (Mit dynamischem Routing):_ Grüne Zielregion $\rightarrow$ berechnet das direkte CO₂-Delta in Gramm und visualisiert die _Green Routing Ratio_ sowie greifbare Äquivalente (z. B. eingesparte Smartphone-Akkuladungen).
-- **Tech-Stack:** Modernes Web-Frontend (Vite / React / Tailwind) mit bidirektionalem WebSocket-Stream für Latenzen < 50ms.
-
-### Komponente 3: Physische Demo (Showstopper Pitch)
-
-- **Hardware:** 3–4 Raspberry Pis repräsentieren globale Rechenzentren (z. B. Nordics, Mitteleuropa, Südeuropa).
-- **Sensorik:** Mini-Solarpanels mit I2C-Lichtsensoren auf 3D-gedruckten Dioramen.
-- **Live-Interaktion:** Die Jury strahlt ein Solarpanel mit einer Taschenlampe an $\rightarrow$ EcoRoute detektiert lokalen Energieüberschuss $\rightarrow$ Status-LEDs am getroffenen Pi leuchten synchron zum Request-Traffic $\rightarrow$ Dashboard visualisiert CO₂-Arbitrage in Echtzeit.
-- **Workload-Ausführung auf den Pis für die Demo:**
-  - _Option 1 (Echte lokale Berechnung):_ Kleiner Service auf dem Pi für echtes Bild-Transcoding (WebP via Sharp/ImageMagick) oder lokales Mini-LLM (SmolLM/Qwen via Ollama) für echte CPU-Last und flackernde LEDs.
-  - _Option 2 (Cloud Relay):_ Pi leitet an Upstream-APIs (OpenAI, Groq, Cloud-Workers) weiter und triggert hardwarenah die LEDs.
-  - _Option 3 (Mock-Streamer):_ Synthetischer Responder für 100% Bühnensicherheit mit realistischer Rechenzeit-Simulation.
-
-### Komponente 4: Dynamischer Traffic-Generator (Hands-Free Pitch Mode)
-
-- **Autonomer Workload-Simulator:** Ein integrierter Traffic-Generator feuert Jobs in variablen Zyklen (dynamische Poisson-Verteilung statt monotonem Sekundentakt).
-- **Workload-Spitzen:** Simuliert realistische Bursts (z. B. "50 WebP Thumbnail Jobs auf einmal" oder "CI/CD Test Suite Run") wechselnd mit ruhigeren Phasen.
-- **Pitch-Vorteil:** Völlig "hands-free" – das Team muss während der 3-minütigen Präsentation keine Tasten drücken. Wenn die Jury die Taschenlampe bewegt, reagiert der ununterbrochene Traffic-Strom sofort sichtbar auf dem Tisch und im Dashboard.
+| Workload Type                     | Example Scenario                                                 | Latency Tolerance   | Carbon Impact      |
+| :-------------------------------- | :--------------------------------------------------------------- | :------------------ | :----------------- |
+| **AI Inference (Batch / Agents)** | RAG embeddings, document analysis, auto-tagging, LLM agent loops | High (1s – 60s)     | **Extremely High** |
+| **CMS Background Jobs**           | WordPress WebP conversion, thumbnail generation (50+ images)     | Medium (1s – 5s)    | **High**           |
+| **CI/CD Pipelines**               | Automated testing, Docker image builds, code compilation         | Very High (minutes) | **High**           |
+| **Media Transcoding**             | Video encoding into HLS/DASH streaming formats                   | High (minutes)      | **Extremely High** |
+| **Data Crunching & Backup**       | Daily DB snapshots, ETL pipelines, analytics aggregations        | Very High (hours)   | **Medium to High** |
 
 ---
 
-## 6. Submission Textbausteine
+## 5. Hackathon MVP Scope
+
+### Component 1: Core Router (Software)
+
+- **Tech Stack Options:**
+  - **Option A: TypeScript / Node.js (Fastify):** Rapid development velocity during the hackathon, native support for the official Model Context Protocol (MCP) TypeScript SDK, hassle-free OpenAI response streaming, and seamless WebSocket integration with the dashboard.
+  - **Option B: Rust (Axum / Actix-web):** Maximum runtime efficiency, minimal memory footprint at the edge, reinforcing the "sovereign, efficient infrastructure" story with native bare-metal performance.
+- **API Interfaces:**
+  - **Universal HTTP Reverse Proxy:** Dynamic forwarding for any asynchronous REST workload (image processing, CI/CD pipelines, batch jobs) to the greenest target region.
+  - **OpenAI-Compatible Gateway Profile:** Drop-in proxy (`/v1/chat/completions`) for seamless AI and agent integration.
+  - **Optional MCP Server Interface:** For direct tool execution (`ecoroute://stats`).
+- **Routing Engine & Carbon Data Model (Hybrid Approach):**
+  - **Baseline Emissions Data:** Realistic grid data (e.g., via Electricity Maps API or fallback dataset: Norway ~25 g, France ~60 g, Germany ~380 g, Poland ~650 g CO₂eq/kWh).
+  - **Dynamic Sensor Override ("Flashlight Effect"):** When an I2C sensor on a Raspberry Pi detects light exposure (simulating a local solar surplus), a mathematical scaling factor dynamically overrides that region's carbon intensity down to ~0 gCO₂eq/kWh.
+  - **Geofencing & Constraint Validation:** Region filtering (`EU-only`) prior to ranking.
+  - **Dispatch:** Request routes to the region with the lowest resulting score.
+
+### Component 2: Live Dashboard (Visualization & Pitch Centerpiece)
+
+- **Design Concept (Dual View):**
+  - **Interactive Map / Region Cluster:** Visualizes global locations (e.g., Norway, Germany, Spain). When a Pi's solar panel is illuminated, the corresponding dashboard node lights up ("Solar Surge Detected"). Animated data flow particles show dynamic traffic rerouting in real time.
+  - **Side-by-Side Live Comparison ("With vs. Without EcoRoute"):**
+    - _Default Routing (Without EcoRoute):_ Fixed target region (e.g., local data center running heavily on coal) $\rightarrow$ cumulative emissions spike rapidly.
+    - _EcoRoute (With Dynamic Routing):_ Green target region $\rightarrow$ computes real-time CO₂ savings in grams, displaying the _Green Routing Ratio_ alongside tangible equivalents (e.g., smartphone charges saved).
+- **Tech Stack:** Modern web frontend (Vite / React / Tailwind) with a bidirectional WebSocket stream for sub-50ms latency.
+
+### Component 3: Physical Hardware Demo (Showstopper Pitch)
+
+- **Hardware:** 3–4 Raspberry Pis representing distributed cloud regions (e.g., Nordics, Central Europe, Southern Europe).
+- **Sensors:** Mini solar panels paired with I2C light sensors mounted on 3D-printed dioramas.
+- **Live Interaction:** The jury shines a flashlight onto a solar panel $\rightarrow$ EcoRoute detects local surplus clean energy $\rightarrow$ status LEDs on the targeted Pi light up synchronously with incoming request traffic $\rightarrow$ the dashboard visualizes the carbon arbitrage in real time.
+- **Workload Execution on the Pis for the Demo:**
+  - _Option 1 (Real Local Computation):_ A lightweight service on the Pi performing real image transcoding (WebP via Sharp/ImageMagick) or running a small local LLM (SmolLM/Qwen via Ollama) to produce real CPU load and flickering activity LEDs.
+  - _Option 2 (Cloud Relay):_ Pi proxies calls to upstream APIs (OpenAI, Groq, Cloudflare Workers) while triggering hardware-level status LEDs.
+  - _Option 3 (Mock Streamer):_ Synthetic responder for 100% stage reliability with realistic latency simulation.
+
+### Component 4: Dynamic Traffic Generator (Hands-Free Pitch Mode)
+
+- **Autonomous Workload Simulator:** A built-in traffic generator dispatches jobs in variable cycles (dynamic Poisson distribution rather than a static 1-second pulse).
+- **Workload Bursts:** Simulates realistic burst traffic (e.g., "50 WebP thumbnail jobs at once" or "CI/CD test suite run") alternating with quieter periods.
+- **Pitch Advantage:** Completely hands-free—the team doesn't have to touch a keyboard during the 3-minute pitch. As the judges move the flashlight, the continuous stream of traffic visibly shifts across the table and on the dashboard immediately.
+
+---
+
+## 6. Hackathon Submission Copy
 
 ### Pitch / Description
 
-Rechenintensive Cloud-Workloads (KI-Inferenz, CI/CD-Pipelines, CMS-Image-Jobs, Transcoding) wachsen exponentiell, doch der Strommix der Rechenzentren fluktuiert je nach Region und Wetter.
-"EcoRoute" ist ein intelligenter, universeller API Gateway, Loadbalancer bzw. Reverse Proxy, der asynchrone HTTP-Requests und rechenintensive Jobs dynamisch in jene Cloud-Region routet,
-die aktuell den höchsten Anteil an erneuerbaren Energien aufweist (geringste gCO2eq/kWh).
-Über APIs (wie Electricity Maps) liest der Proxy die Kohlenstoffintensität globaler Standorte aus.
-Sendet ein Nutzer, CMS oder KI-Agent einen asynchronen Job, wandert dieser dorthin, wo wortwörtlich "gerade die Sonne scheint".
-EcoRoute operiert latenzarm am Edge, unterstützt Compliance-Zonen (z.B. "Nur EU") und integriert sich nahtlos als Open-Source-Infrastruktur.
+Compute-heavy cloud workloads (AI inference, CI/CD pipelines, CMS image processing, video transcoding) are growing exponentially, yet the renewable energy mix across data centers fluctuates constantly by region and weather.
+"EcoRoute" is an intelligent, universal API gateway, load balancer, and reverse proxy that dynamically routes asynchronous HTTP requests and heavy jobs to the cloud region currently powered by the highest share of clean energy (lowest gCO₂eq/kWh).
+Using real-time grid APIs (such as Electricity Maps), the proxy monitors carbon intensity worldwide.
+Whenever a user, CMS, or AI agent dispatches an asynchronous task, it travels to wherever the sun is literally shining.
+EcoRoute runs at low latency on the edge, enforces compliance boundaries (such as "EU-only"), and integrates seamlessly into any stack as open-source infrastructure.
 
-### Goal / MVP by end of Hackathon
+### Goal / MVP by the End of the Hackathon
 
-1. Lauffähiger Open-Source-Router (Node.js/Rust), der asynchrone HTTP-Workloads und OpenAI-kompatible Requests annimmt und dynamisch nach CO2-Werten weiterleitet.
-2. Ein interaktives Dashboard, das die eingesparten Emissionen und die "Green Routing Ratio" in Echtzeit visualisiert.
-3. Die physische Demo: Wir simulieren die Cloud-Regionen mit Raspberry Pis in 3D-gedruckten Dioramen. Ausgestattet mit Mini-Solarpanels und Sensoren, verlagert der Router den echten Request-Traffic live auf den Pi, dessen Solarpanel gerade von der Jury (mit einer Taschenlampe) angestrahlt wird, sichtbar gemacht durch Traffic-LEDs.
+1. A working open-source router (Node.js/Rust) that accepts asynchronous HTTP workloads and OpenAI-compatible requests, dynamically dispatching them based on carbon intensity.
+2. An interactive live dashboard visualizing avoided emissions and the "Green Routing Ratio" in real time.
+3. The physical hardware demo: Simulating cloud regions using Raspberry Pis housed in 3D-printed dioramas. Equipped with mini solar panels and sensors, the router steers live request traffic in real time to whichever Pi the judges illuminate with a flashlight, confirmed by synchronized traffic LEDs.
 
-### Long-term Viability post-Hackathon
+### Long-Term Viability Post-Hackathon
 
-EcoRoute wird als Open-Source-Infrastruktur (MIT License) und als standardisierter Model Context Protocol (MCP) Server veröffentlicht.
-So können Entwickler nachhaltiges Routing direkt in Tools wie Claude Desktop oder WordPress-Plugins integrieren, ohne ihre Architektur zu ändern.
-Nach dem Event planen wir, die Integration von dynamischen Cloud-Pricing-APIs voranzutreiben, sodass EcoRoute nicht nur das "grüne Image" fördert,
-sondern Unternehmen echte Arbitrage-Kostenvorteile bei asynchronen Workloads (wie Batch-Processing, Scraping, Auto-Tagging im CMS) bietet.
+EcoRoute will be published as open-source infrastructure (MIT License) alongside a standardized Model Context Protocol (MCP) server.
+This enables developers to embed carbon-aware routing directly into environments like Claude Desktop or CMS plugins without altering underlying application architecture.
+Post-hackathon, we plan to integrate dynamic cloud spot pricing APIs—transforming EcoRoute from an environmental initiative into a direct cost-saving engine, delivering tangible arbitrage on asynchronous workloads (batch processing, web scraping, CMS auto-tagging).
 
 ---
 
-## 7. Hard Facts & USPs
+## 7. Integration Flexibility
 
-- **Universeller Scope:** Nicht auf KI limitiert – optimiert jeden asynchronen HTTP-Compute-Workload (CMS Image-Processing, Video-Transcoding, CI/CD-Builds, RAG-Indexierung).
-- **Track Fit 2027:** Adressiert direkt _Sovereign, efficient infrastructure_ & _The agent-ready web_.
-- **Zero Overhead Adoption:** Drop-in Proxy (Umstellen der Ziel-URL / `baseURL` in Tools & SDKs genügt).
-- **Economic Arbitrage (Green = Cheap):** Erneuerbarer Stromüberfluss (Solar/Wind-Peaks) drückt Börsenstrompreise und Spot-Instanzen-Kosten. EcoRoute liefert handfeste Kostenersparnis für CFOs bei rechenintensiven Batch-Workloads.
-- **Dual-Incentive:** Ökologischer Impact (CO₂-Reduktion) gekoppelt mit nativer Kosteneffizienz.
-- **Haptisches Pitch-Erlebnis:** Die Taschenlampen-Demo mit Raspberry Pis, echten Solarpanels und synchron leuchtenden LEDs hebt das Projekt sofort von rein virtuellen Software-Pitches ab.
-- **Sovereign Infrastructure:** Harte Trennung zwischen unverhandelbarer Compliance (`ALLOWED_REGIONS` für EU-Souveränität) und intelligenter Optimierung innerhalb der sicheren Grenzen.
+EcoRoute is designed to integrate seamlessly and unobtrusively into existing infrastructure:
+
+- **Zero-Config Drop-In:** Developers do not need to write new code or integrate complex SDKs. EcoRoute operates as a reverse proxy—existing applications simply point to a new base URL (e.g., swapping `api.openai.com` for `ecoroute.local/openai`, or updating a CMS worker endpoint to the EcoRoute gateway).
+- **Architectural Extension:** If load balancers (such as Nginx, AWS ALB, or Traefik) are already in place, EcoRoute does not need to replace them. It can be slotted in gracefully as an "upstream router" behind the primary load balancer to intercept specific asynchronous workloads (e.g., matching the `/jobs` path). Alternatively, EcoRoute can be configured as a sidecar service that provides dynamic routing decisions back to the primary ingress layer. The existing core infrastructure—including SSL/TLS termination and DDoS protection—remains completely untouched.
+
+---
+
+## 8. Competitive Differentiation
+
+Existing approaches either lock users into proprietary cloud ecosystems (e.g., Google Cloud Carbon-Aware Scheduling, Azure KEDA, Cloudflare Green Compute),
+demand extensive code-level integration (such as the GSF Carbon Aware SDK), or merely measure emissions retrospectively after execution (CodeCarbon, Kepler).
+EcoRoute differentiates itself through two core pillars:
+
+- **Provider-Agnostic:** Dynamic routing balances workloads across heterogeneous cloud providers without vendor lock-in.
+- **Zero-Config Drop-In:** Integration requires no proprietary SDKs, infrastructure overhauls, or application code rewrites.
+  Operating as a reverse proxy, EcoRoute only requires swapping the base URL (e.g., within an existing load balancer or LLM client configuration).
+
+---
+
+## 9. Key Highlights & USPs
+
+- **Universal Scope:** Not restricted to AI—optimizes any asynchronous compute workload (CMS image optimization, video transcoding, CI/CD builds, RAG indexing).
+- **Track Fit 2027:** Directly targets _Sovereign, efficient infrastructure_ & _The agent-ready web_.
+- **Zero-Overhead Adoption:** Drop-in proxy (simply update the endpoint / `baseURL` in tools & SDKs).
+- **Economic Arbitrage (Green = Cheap):** Surplus renewable power (solar/wind spikes) drives down wholesale electricity prices and cloud spot instances. EcoRoute delivers bottom-line cost savings for CFOs on heavy batch workloads.
+- **Dual Incentive:** Measurable environmental impact (CO₂ reduction) paired with natural financial efficiency.
+- **Tactile Pitch Experience:** The interactive flashlight demo featuring Raspberry Pis, real solar cells, and synced LED indicators instantly sets the project apart from purely virtual software pitches.
+- **Sovereign Infrastructure:** Strict division between non-negotiable compliance (`ALLOWED_REGIONS` for EU data sovereignty) and intelligent optimization within secure, compliant borders.
