@@ -7,10 +7,10 @@
 
 ## 1. Problem & Pain Point
 
-- **Exponentielles Compute-Wachstum:** Rechenintensive Workloads (KI-Inferenz/Agenten, CI/CD-Builds, Bild-/Video-Transcoding, Daten-Pipelines) verbrauchen gigantische Strommengen.
+- **Exponentielles Compute-Wachstum:** KI-Inferenz (LLMs, RAG, autonome Agenten), CI/CD und Background-Jobs fressen gigantische Strommengen.
 - **Fluktuierender Strommix:** Der Anteil erneuerbarer Energien in Rechenzentren schwankt je nach Sonnenstand, Wind und Region extrem.
 - **Inflexible Infrastruktur:** Bisherige Architekturen routen statisch auf feste Server/Regionen, unabhängig vom aktuellen Energiemix.
-- **Falsche Priorisierung:** Asynchrone Jobs (Latenztoleranz: Sekunden bis Minuten) werden unnötig mit Kohlestrom verarbeitet, obwohl anderswo grüner Strom verpufft.
+- **Falsche Priorisierung:** Asynchrone Jobs (Latenztoleranz: 0,5s bis Minuten) werden unnötig mit Kohlestrom verarbeitet.
 
 ---
 
@@ -29,7 +29,7 @@ Ein intelligenter, universeller **Reverse Proxy & Gateway**, der asynchrone HTTP
                   │           EcoRoute            │
                   │   - Carbon Aware Engine       │
                   │   - Compliance Filter (EU-only)│
-                  │   - OpenAI / MCP Interface    │
+                  │   - Universeller HTTP / OpenAI │
                   └───────┬───────────────┬───────┘
                           │               │
      Lowest gCO2/kWh      │               │  Fallback / Low Green
@@ -43,11 +43,9 @@ Ein intelligenter, universeller **Reverse Proxy & Gateway**, der asynchrone HTTP
 
 ### Kernfunktionen & Integration
 
-1. **Zero-Code Drop-in Proxy (Primär):** Vollständig kompatibel mit OpenAI-Clients. Entwickler ändern lediglich die `baseURL` – der Client (Chat-App, Agent, WordPress) muss nicht einmal wissen, dass geroutet wird.
-   ```python
-   # 1-Zeilen-Wechsel:
-   client = OpenAI(base_url="http://ecoroute.local/v1", api_key="sk-...")
-   ```
+1. **Universeller HTTP Reverse Proxy & Job-Dispatcher:**
+   - **Beliebige Workloads:** Routet beliebige asynchrone HTTP-Requests (z. B. `POST /api/v1/jobs/image-transcode`, `POST /ci/runner`, `POST /video/convert`) transparent an Worker in der grünsten Region weiter.
+   - **Zero-Code OpenAI-Profil:** Für KI-Workloads fungiert EcoRoute als Drop-In Base-URL-Replacement für beliebige OpenAI-kompatible Clients.
 2. **Dynamic Carbon Routing:** Fragt Grid-Daten (z. B. Electricity Maps / WattTime) ab und ermittelt die Region mit der geringsten Kohlenstoffintensität (`gCO2eq/kWh`).
 3. **Compliance, Sovereign Infrastructure & Geofencing:**
    - **Self-Hosted Enterprise (Infrastruktur-Perimeter):** Unternehmen konfigurieren in `config.yaml` / ENV nur freigegebene Zielregionen (z. B. `ALLOWED_REGIONS=["no-south", "de-central", "fr-north"]`). Workloads verlassen niemals die EU/DSGVO-Zone; EcoRoute optimiert den Strommix rein _innerhalb_ dieses souveänen Perimeters.
@@ -95,7 +93,10 @@ Ideal für alle **asynchronen, rechenintensiven** Workloads mit Latenzfenster $\
 - **Tech-Stack Optionen:**
   - **Option A: TypeScript / Node.js (Fastify):** Schnelle Entwicklungsgeschwindigkeit im Hackathon, nativer Support für das offizielle Model Context Protocol (MCP) TypeScript SDK, unkompliziertes Streaming von OpenAI-Responses & nahtlose WebSocket-Anbindung ans Dashboard.
   - **Option B: Rust (Axum / Actix-web):** Maximale Laufzeit-Effizienz, minimaler Memory-Footprint am Edge, unterstreicht die "Sovereign, efficient infrastructure"-Story mit nativer Performance.
-- **API-Schnittstelle:** OpenAI-kompatibler Reverse Proxy (`/v1/chat/completions`) & MCP Server Interface.
+- **API-Schnittstellen:**
+  - **Universeller HTTP Reverse Proxy:** Dynamisches Forwarding für beliebige asynchrone REST-Workloads (Image-Processing, CI/CD-Pipelines, Batch-Jobs) an die grünste Ziel-Region.
+  - **OpenAI-kompatibles Gateway Profil:** Drop-In Proxy (`/v1/chat/completions`) für nahtlose KI- und Agenten-Einbindung.
+  - **Optionales MCP Server Interface:** Für direkte Tool-Aufrufe (`ecoroute://stats`).
 - **Routing-Engine & Carbon-Datenmodell (Hybrid-Ansatz):**
   - **Basis-Emissionsdaten:** Realistische Grid-Daten (z. B. via Electricity Maps API oder Fallback-Dataset für Norwegen ~25 g, Frankreich ~60 g, Deutschland ~380 g, Polen ~650 g CO₂eq/kWh).
   - **Dynamischer Sensor-Override (Taschenlampen-Effekt):** Detektiert der I2C-Sensor an einem Pi Licht-Einstrahlung (Solarüberschuss), überschreibt ein mathematischer Faktor die Intensität dieser Region dynamisch bis auf ~0 gCO₂eq/kWh.
@@ -116,10 +117,10 @@ Ideal für alle **asynchronen, rechenintensiven** Workloads mit Latenzfenster $\
 - **Hardware:** 3–4 Raspberry Pis repräsentieren globale Rechenzentren (z. B. Nordics, Mitteleuropa, Südeuropa).
 - **Sensorik:** Mini-Solarpanels mit I2C-Lichtsensoren auf 3D-gedruckten Dioramen.
 - **Live-Interaktion:** Die Jury strahlt ein Solarpanel mit einer Taschenlampe an $\rightarrow$ EcoRoute detektiert lokalen Energieüberschuss $\rightarrow$ Status-LEDs am getroffenen Pi leuchten synchron zum Request-Traffic $\rightarrow$ Dashboard visualisiert CO₂-Arbitrage in Echtzeit.
-- **Inferenz-Optionen für die Demo:**
-  - _Option 1 (Lokales Ollama):_ SmolLM / Qwen / Llama-3.2 auf Pi für echten lokalen Compute.
-  - _Option 2 (Cloud Relay):_ Pi leitet an Groq/OpenAI weiter für schnelle Antworten.
-  - _Option 3 (Mock-Streamer):_ Synthetischer Responder für 100% Bühnensicherheit.
+- **Workload-Ausführung auf den Pis für die Demo:**
+  - _Option 1 (Echte lokale Berechnung):_ Kleiner Service auf dem Pi für echtes Bild-Transcoding (WebP via Sharp/ImageMagick) oder lokales Mini-LLM (SmolLM/Qwen via Ollama) für echte CPU-Last und flackernde LEDs.
+  - _Option 2 (Cloud Relay):_ Pi leitet an Upstream-APIs (OpenAI, Groq, Cloud-Workers) weiter und triggert hardwarenah die LEDs.
+  - _Option 3 (Mock-Streamer):_ Synthetischer Responder für 100% Bühnensicherheit mit realistischer Rechenzeit-Simulation.
 
 ### Komponente 4: Dynamischer Traffic-Generator (Hands-Free Pitch Mode)
 
@@ -133,16 +134,16 @@ Ideal für alle **asynchronen, rechenintensiven** Workloads mit Latenzfenster $\
 
 ### Pitch / Description
 
-KI-Workloads wachsen exponentiell, doch der Strommix der Rechenzentren fluktuiert je nach Region und Wetter.
-"EcoRoute" ist ein intelligenter API Gateway, Loadbalancer bzw Reverse Proxy (und MCP-Ressource), der bel. Workloads und LLM-Requests dynamisch in jene Cloud-Region routet,
-die aktuell den höchsten Anteil an erneuerbaren Energien aufweist.
-Über APIs (wie Electricity Maps) liest der Proxy die aktuelle Kohlenstoffintensität (gCO2eq/kWh) globaler Standorte aus.
-Sendet ein Nutzer oder KI-Agent einen asynchronen Job, wird dieser nicht starr an Server A gesendet, sondern dorthin, wo wortwörtlich "gerade die Sonne scheint".
-Das Projekt unterstützt Compliance-Zonen (z.B. "Nur EU"), operiert latenzarm am Edge und integriert sich nahtlos in bestehende Agenten-Workflows als Open-Source-Infrastruktur.
+Rechenintensive Cloud-Workloads (KI-Inferenz, CI/CD-Pipelines, CMS-Image-Jobs, Transcoding) wachsen exponentiell, doch der Strommix der Rechenzentren fluktuiert je nach Region und Wetter.
+"EcoRoute" ist ein intelligenter, universeller API Gateway, Loadbalancer bzw. Reverse Proxy, der asynchrone HTTP-Requests und rechenintensive Jobs dynamisch in jene Cloud-Region routet,
+die aktuell den höchsten Anteil an erneuerbaren Energien aufweist (geringste gCO2eq/kWh).
+Über APIs (wie Electricity Maps) liest der Proxy die Kohlenstoffintensität globaler Standorte aus.
+Sendet ein Nutzer, CMS oder KI-Agent einen asynchronen Job, wandert dieser dorthin, wo wortwörtlich "gerade die Sonne scheint".
+EcoRoute operiert latenzarm am Edge, unterstützt Compliance-Zonen (z.B. "Nur EU") und integriert sich nahtlos als Open-Source-Infrastruktur.
 
 ### Goal / MVP by end of Hackathon
 
-1. Lauffähiger Open-Source-Router (Node.js/Rust), der OpenAI-kompatible Requests annimmt und dynamisch nach simulierten CO2-Werten weiterleitet.
+1. Lauffähiger Open-Source-Router (Node.js/Rust), der asynchrone HTTP-Workloads und OpenAI-kompatible Requests annimmt und dynamisch nach CO2-Werten weiterleitet.
 2. Ein interaktives Dashboard, das die eingesparten Emissionen und die "Green Routing Ratio" in Echtzeit visualisiert.
 3. Die physische Demo: Wir simulieren die Cloud-Regionen mit Raspberry Pis in 3D-gedruckten Dioramen. Ausgestattet mit Mini-Solarpanels und Sensoren, verlagert der Router den echten Request-Traffic live auf den Pi, dessen Solarpanel gerade von der Jury (mit einer Taschenlampe) angestrahlt wird, sichtbar gemacht durch Traffic-LEDs.
 
@@ -157,9 +158,10 @@ sondern Unternehmen echte Arbitrage-Kostenvorteile bei asynchronen Workloads (wi
 
 ## 7. Hard Facts & USPs
 
+- **Universeller Scope:** Nicht auf KI limitiert – optimiert jeden asynchronen HTTP-Compute-Workload (CMS Image-Processing, Video-Transcoding, CI/CD-Builds, RAG-Indexierung).
 - **Track Fit 2027:** Adressiert direkt _Sovereign, efficient infrastructure_ & _The agent-ready web_.
-- **Zero Overhead Adoption:** Drop-in Proxy (Änderung der `baseURL` in Python/Node SDKs genügt).
-- **Economic Arbitrage (Green = Cheap):** Erneuerbarer Stromüberfluss (Solar/Wind-Peaks) drückt die Börsenstrompreise und Spot-Instanzen-Kosten. EcoRoute ist daher kein reines CSR-Marketing-Tool, sondern liefert handfeste Kostenersparnis für CFOs bei asynchronen Workloads.
+- **Zero Overhead Adoption:** Drop-in Proxy (Umstellen der Ziel-URL / `baseURL` in Tools & SDKs genügt).
+- **Economic Arbitrage (Green = Cheap):** Erneuerbarer Stromüberfluss (Solar/Wind-Peaks) drückt Börsenstrompreise und Spot-Instanzen-Kosten. EcoRoute liefert handfeste Kostenersparnis für CFOs bei rechenintensiven Batch-Workloads.
 - **Dual-Incentive:** Ökologischer Impact (CO₂-Reduktion) gekoppelt mit nativer Kosteneffizienz.
 - **Haptisches Pitch-Erlebnis:** Die Taschenlampen-Demo mit Raspberry Pis, echten Solarpanels und synchron leuchtenden LEDs hebt das Projekt sofort von rein virtuellen Software-Pitches ab.
-- **Unverlierbare Pitch-Story:** Klare Trennung zwischen harter Compliance (Sovereign Perimeter bleibt unangetastet) und intelligenter Optimierung innerhalb der sicheren Grenzen.
+- **Sovereign Infrastructure:** Harte Trennung zwischen unverhandelbarer Compliance (`ALLOWED_REGIONS` für EU-Souveränität) und intelligenter Optimierung innerhalb der sicheren Grenzen.
