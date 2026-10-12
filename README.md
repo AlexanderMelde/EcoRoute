@@ -128,17 +128,32 @@ Milan (B.Sc. in Embedded Systems) is an edge-hardware and IoT developer with int
 ## Summaries for the project submission:
 
 **Pitch / Description:**
-Compute-heavy workloads (AI inference, CI/CD, image processing, video transcoding) are growing rapidly, while data center renewable energy shares fluctuate constantly by weather and geography.
-EcoRoute is a universal reverse proxy and API gateway that dynamically routes asynchronous HTTP requests and batch jobs to cloud regions with the highest share of clean energy (lowest gCO₂eq/kWh).
-Using real-time grid APIs (such as Electricity Maps), EcoRoute monitors carbon intensity globally, dispatching tasks to regions with active renewable generation.
-Operating at the edge with low latency, EcoRoute enforces regional compliance boundaries (e.g., "EU-only") and integrates into existing stacks without code changes.
+EcoRoute is a "follow-the-sun" carbon-aware workload router that dynamically directs latency-tolerant
+compute tasks to cloud regions currently powered by surplus renewable energy. Acting as a zero-overhead,
+drop-in reverse proxy, it uses real-time grid emission APIs to identify zones with the lowest carbon
+intensity (gCO₂eq/kWh). By routing heavy asynchronous workloads—such as AI inference, video transcoding,
+CI/CD pipelines, and data crunching—to the "greenest" regions, EcoRoute slashes carbon footprints while
+lowering electricity costs. Designed to be data-sovereign (supporting geo-fencing like EU-only) and
+telemetry-rich, it offers a sustainable, open-source alternative to proprietary cloud tools without
+requiring invasive application rewrites.
 
 **Goal / MVP by the End of the Hackathon:**
 
-1. An open-source router (Node.js/Rust) dynamically dispatching asynchronous HTTP and OpenAI-compatible workloads based on carbon intensity.
-2. A live dashboard visualizing avoided emissions and the Green Routing Ratio in real time.
-3. A physical hardware demo using Raspberry Pis in 3D-printed dioramas with mini solar panels: shine a flashlight on a panel, traffic dynamically reroutes to that Pi
+The hackathon MVP delivers a fully functional HTTP Reverse Proxy capable of dynamic carbon routing.
+A core deliverable is a live dashboard visualizing real-time traffic rerouting and comparing CO₂
+savings via a "Green Routing Ratio." To make this tangible, the team will showcase an interactive
+hardware demo using Raspberry Pis equipped with solar panels and light sensors.
+Shining a flashlight on a sensor will simulate a renewable energy surplus, triggering the router
+to instantly redirect simulated workloads to the newly "green" node.
+Additionally, the MVP will include an OpenAI-compatible LLM gateway for seamless AI integration and
+an MCP server interface to expose sustainability metrics directly to AI agents.
 
 **Long-Term Viability Post-Hackathon:**
-EcoRoute will be published as the first open-source drop-in-solution for carbon-aware workload routing.
-We will motivate cloud hosters to introduce dynamically-priced regions to make EcoRoute an essential cost-saving engine, alongside the carbon reduction.
+Carbon-aware computing is a rapidly growing enterprise priority, yet current solutions force vendor
+lock-in (e.g., Google/Azure) or require complex SDK integrations. EcoRoute fills this gap as a
+universally adaptable, open-source tool. Post-hackathon, the architecture will expand into a
+globally scalable edge computing solution (via Cloudflare/Fastly) and offer Kubernetes Service
+Mesh integrations for enterprise microservices. Its dual incentive—measurably slashing CO₂ emissions
+while exploiting cheaper renewable electricity rates—guarantees strong commercial appeal.
+As corporate ESG regulations tighten globally, a multi-cloud, drop-in green routing solution
+likeEcoRoute is positioned to become an essential, frictionless DevOps standard.
