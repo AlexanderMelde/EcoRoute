@@ -128,32 +128,19 @@ Milan (B.Sc. in Embedded Systems) is an edge-hardware and IoT developer with int
 ## Summaries for the project submission:
 
 **Pitch / Description:**
-EcoRoute is a "follow-the-sun" carbon-aware workload router that dynamically directs latency-tolerant
-compute tasks to cloud regions currently powered by surplus renewable energy. Acting as a zero-overhead,
-drop-in reverse proxy, it uses real-time grid emission APIs to identify zones with the lowest carbon
-intensity (gCO₂eq/kWh). By routing heavy asynchronous workloads—such as AI inference, video transcoding,
-CI/CD pipelines, and data crunching—to the "greenest" regions, EcoRoute slashes carbon footprints while
-lowering electricity costs. Designed to be data-sovereign (supporting geo-fencing like EU-only) and
-telemetry-rich, it offers a sustainable, open-source alternative to proprietary cloud tools without
-requiring invasive application rewrites.
+EcoRoute is a carbon-aware router that sends heavy compute jobs wherever the sun is shining or the wind is blowing.
+By tracking real-time grid emissions, it dynamically forwards latency-tolerant workloads—like AI inference, video transcoding, or CI/CD—to cloud regions with the lowest carbon footprint.
+It acts as a zero-overhead, drop-in reverse proxy, meaning you don't need to rewrite any code to use it.
+You get to slash your CO₂ emissions and take advantage of cheaper renewable energy rates, all while keeping your data sovereign via strict geofencing.
+It’s an open-source, frictionless way to make your infrastructure instantly greener.
 
 **Goal / MVP by the End of the Hackathon:**
-
-The hackathon MVP delivers a fully functional HTTP Reverse Proxy capable of dynamic carbon routing.
-A core deliverable is a live dashboard visualizing real-time traffic rerouting and comparing CO₂
-savings via a "Green Routing Ratio." To make this tangible, the team will showcase an interactive
-hardware demo using Raspberry Pis equipped with solar panels and light sensors.
-Shining a flashlight on a sensor will simulate a renewable energy surplus, triggering the router
-to instantly redirect simulated workloads to the newly "green" node.
-Additionally, the MVP will include an OpenAI-compatible LLM gateway for seamless AI integration and
-an MCP server interface to expose sustainability metrics directly to AI agents.
+Our MVP is a working HTTP reverse proxy that routes traffic based on live carbon data, paired with a dashboard tracking real-time CO₂ savings via a "Green Routing Ratio".
+To show exactly how it works, we’re bringing a tactile hardware demo: a cluster of Raspberry Pis hooked up to mini solar panels and light sensors.
+Shine a flashlight on a sensor to simulate a solar surplus, and watch EcoRoute instantly redirect the workload to that "green" node!
+We’re also building a drop-in OpenAI-compatible gateway and an MCP server so AI agents can monitor their own sustainability stats.
 
 **Long-Term Viability Post-Hackathon:**
-Carbon-aware computing is a rapidly growing enterprise priority, yet current solutions force vendor
-lock-in (e.g., Google/Azure) or require complex SDK integrations. EcoRoute fills this gap as a
-universally adaptable, open-source tool. Post-hackathon, the architecture will expand into a
-globally scalable edge computing solution (via Cloudflare/Fastly) and offer Kubernetes Service
-Mesh integrations for enterprise microservices. Its dual incentive—measurably slashing CO₂ emissions
-while exploiting cheaper renewable electricity rates—guarantees strong commercial appeal.
-As corporate ESG regulations tighten globally, a multi-cloud, drop-in green routing solution
-likeEcoRoute is positioned to become an essential, frictionless DevOps standard.
+Green cloud computing is a massive enterprise trend, but it usually means getting locked into a specific cloud provider or dealing with complex code rewrites.
+EcoRoute solves this by being open-source, multi-cloud, and entirely frictionless. After the hackathon, we plan to scale it as an edge-computing solution and offer Kubernetes Service Mesh integrations.
+Because EcoRoute offers a powerful dual incentive—helping companies hit strict ESG climate goals while actively lowering electricity bills—it has huge commercial potential as a standard, drop-in DevOps tool.
