@@ -29,6 +29,7 @@ Chooses A  ▼               ▼
 2. **Dynamic Carbon Routing:**
    Queries real-time grid emissions APIs to identify the region with the lowest carbon intensity (`gCO2eq/kWh`).
 3. **Compliant and Sovereign:** Target regions can be restricted to e.g. EU-only
+   - **Optional Time-Deferred Routing:** Non-urgent jobs (e.g. backups) can wait for the greenest hour when no allowed region is green right now (`X-EcoRoute-Deadline: 6h`).
 4. **Telemetry:** Tracks avoided CO₂ emissions and calculates the _Green Routing Ratio_.
 5. **Agent rady:** Optimizes AI Workloads, Stats can be read via MCP
 6. **Zero-Overhead Adoption:** Drop-in proxy requiring only endpoint configuration.
@@ -115,7 +116,7 @@ Unlike EcoRoute, existing approaches rely on proprietary cloud ecosystems
 require invasive code changes (GSF Carbon Aware SDK),
 or only measure emissions retrospectively (CodeCarbon, Kepler).
 
-An open-source drop-in-solution like EcoRoute does not seem to exist yet.
+An open-source drop-in-solution like EcoRoute does not seem to exist yet. See [Related Work](docs/related-work.md) for a detailed comparison.
 
 ## About the Project Leads
 
@@ -123,7 +124,7 @@ EcoRoute is led by **Alexander Melde** and **Milan Ferus-Comelo**, combining ent
 
 Alexander (M.Sc. in Computer Science) contributes deep expertise in full-stack development, TypeScript, and AI systems, paired with energy-sector domain knowledge building grid-sensor solutions.
 
-Milan (B.Sc. in Embedded Systems) is an edge-hardware and IoT developer with international startup experience specializing in rapid prototyping.
+Milan is an edge-AI and IoT developer with an electrical engineering background whose work has been awarded by the KI Bundesverband, the United Nations and the German Federal Ministry of Research, Technology and Space. He even won three awards at CloudFest Hackathon 2026.
 
 ## Summaries for the project submission:
 
