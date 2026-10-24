@@ -1,4 +1,4 @@
-# EcoRoute — Carbon-Aware Workload Router
+# EcoRouter — Carbon-Aware Workload Router
 
 **Follow-the-Sun Routing**:
 Dynamically routes latency-tolerant asynchronous compute- and electricity-intensive jobs / workloads
@@ -14,7 +14,7 @@ both the environment and your wallet.
        └──────────┬─────────┘
                   ▼
    ┌─────────────────────────────────┐
-   │        EcoRoute detects:        │
+   │        EcoRouter detects:        │
    │ A has high Solar/Wind, B doesnt │
    └───────┬───────────────┬─────────┘
 Chooses A  ▼               ▼
@@ -36,7 +36,7 @@ Chooses A  ▼               ▼
 7. **Dual Incentive:** Combines measurable CO₂ reduction with direct financial savings.
 8. **Tactile Hardware Demo:** Showcases dynamic carbon routing live with illuminated Raspberry Pis, solar panels, and status LEDs.
 
-EcoRoute is expected to have the highest impact for long-running AI Inference and media transcoding workloads.
+EcoRouter is expected to have the highest impact for long-running AI Inference and media transcoding workloads.
 Further impact will be on CMS Background jobs like image conversion and thumbnail generation and CI/CD ppipeline steps.
 It can also be used for Data Crunching (ETL pipelines, analytics aggregations) and Backup jobs (e.g. DB Snapshots).
 
@@ -116,11 +116,11 @@ Unlike EcoRoute, existing approaches rely on proprietary cloud ecosystems
 require invasive code changes (GSF Carbon Aware SDK),
 or only measure emissions retrospectively (CodeCarbon, Kepler).
 
-An open-source drop-in-solution like EcoRoute does not seem to exist yet. See [Related Work](docs/related-work.md) for a detailed comparison.
+An open-source drop-in-solution like EcoRouter does not seem to exist yet. See [Related Work](docs/related-work.md) for a detailed comparison.
 
 ## About the Project Leads
 
-EcoRoute is led by **Alexander Melde** and **Milan Ferus-Comelo**, combining enterprise software development with award-winning IoT prototyping.
+EcoRouter is led by **Alexander Melde** and **Milan Ferus-Comelo**, combining enterprise software development with award-winning IoT prototyping.
 
 Alexander (M.Sc. in Computer Science) contributes deep expertise in full-stack development, TypeScript, and AI systems, paired with energy-sector domain knowledge building grid-sensor solutions.
 
@@ -129,19 +129,10 @@ Milan is an edge-AI and IoT developer with an electrical engineering background 
 ## Summaries for the project submission:
 
 **Pitch / Description:**
-EcoRoute is a carbon-aware router that sends heavy compute jobs wherever the sun is shining or the wind is blowing.
-By tracking real-time grid emissions, it dynamically forwards latency-tolerant workloads—like AI inference, video transcoding, or CI/CD—to cloud regions with the lowest carbon footprint.
-It acts as a zero-overhead, drop-in reverse proxy, meaning you don't need to rewrite any code to use it.
-You get to slash your CO₂ emissions and take advantage of cheaper renewable energy rates, all while keeping your data sovereign via strict geofencing.
-It’s an open-source, frictionless way to make your infrastructure instantly greener.
+EcoRouter is a carbon-aware routing layer that sends heavy compute jobs wherever the sun is shining or the wind is blowing. By tracking real-time grid emissions, it dynamically forwards latency-tolerant workloads to cloud regions with the lowest carbon footprint. It acts as a zero-overhead, drop-in reverse proxy, meaning you don't need to rewrite any code to use it. Users slash CO₂ emissions and take advantage of cheaper renewable energy rates, all while keeping data sovereign via strict geofencing. It’s an open-source, frictionless way to make infrastructure instantly greener.
 
 **Goal / MVP by the End of the Hackathon:**
-Our MVP is a working HTTP reverse proxy that routes traffic based on live carbon data, paired with a dashboard tracking real-time CO₂ savings via a "Green Routing Ratio".
-To show exactly how it works, we’re bringing a tactile hardware demo: a cluster of Raspberry Pis hooked up to mini solar panels and light sensors.
-Shine a flashlight on a sensor to simulate a solar surplus, and watch EcoRoute instantly redirect the workload to that "green" node!
-We’re also building a drop-in OpenAI-compatible gateway and an MCP server so AI agents can monitor their own sustainability stats.
+Our MVP is a working HTTP reverse proxy that routes traffic based on live carbon data, paired with a dashboard tracking real-time CO₂ savings via a "Green Routing Ratio". To show exactly how it works, we’re bringing a tactile hardware demo: a cluster of Raspberry Pis hooked up to mini solar panels and light sensors. Shine a flashlight on a sensor to simulate a solar surplus, and watch EcoRouter instantly redirect the workload to that "green" node. We can extend the system by developing a drop-in OpenAI-compatible gateway and an MCP server so AI agents can monitor their own sustainability stats.
 
 **Long-Term Viability Post-Hackathon:**
-Green cloud computing is a massive enterprise trend, but it usually means getting locked into a specific cloud provider or dealing with complex code rewrites.
-EcoRoute solves this by being open-source, multi-cloud, and entirely frictionless. After the hackathon, we plan to scale it as an edge-computing solution and offer Kubernetes Service Mesh integrations.
-Because EcoRoute offers a powerful dual incentive—helping companies hit strict ESG climate goals while actively lowering electricity bills—it has huge commercial potential as a standard, drop-in DevOps tool.
+Green cloud computing is a massive enterprise trend, but it usually means getting locked into a specific cloud provider or dealing with complex code rewrites. EcoRouter solves this by being open-source, multi-cloud, and entirely frictionless. After the hackathon, we plan to scale it as an edge-computing solution and offer Kubernetes Service Mesh integrations. Because EcoRouter offers a powerful dual incentive by helping companies hit strict ESG climate goals while actively lowering electricity bills, it has huge commercial potential as a standard, drop-in DevOps tool.
